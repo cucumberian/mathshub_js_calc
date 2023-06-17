@@ -54,6 +54,9 @@
     font-size: 21px;
     font-family: 'SFPro Regular';
 }
+.btn_wrapper > button:active {
+    outline: none;
+}
 
 .btn_wrapper span {
     position: relative;
@@ -104,4 +107,8 @@
 .btns_wrapper > button > span {
     position: relative;
     z-index: 2;
+}
+
+.btns_wrapper > button.pressed {
+    transform: scale(0.9);
 }
