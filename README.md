@@ -4,12 +4,11 @@
 
 ## Команды
 
-number_input(value)
-operation_input(operation)
-equal()
-ac()
-render()
-
+- `number_input(value)`
+- `operation_input(operation)`
+- `equal()`
+- `ac()`
+- `render()`
 
 ## Состояния
 - __null__
