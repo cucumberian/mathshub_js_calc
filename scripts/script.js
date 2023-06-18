@@ -1,42 +1,25 @@
 'use strict';
 
-function calc_AC() {
-    document.getElementById('display').value = '';
-}
-function calc_plus() {
-    document.getElementById('display').value += '+';
-}
-function calc_0() {
-    document.getElementById('display').value += '0';
-}
-function calc_dot() {
-    document.getElementById('display').value += '.';
-}
-function calc_equal() {
-    document.getElementById('display').value = eval(document.getElementById('display').value);
-}
-
-
-const symbols = [
-    {content: 'AC', classes: ['gray_btn', ],     fun: calc_AC},
-    {content: 'C',  classes: ['gray_btn', ],     fun: calc_AC},
-    {content: '<',  classes: ['gray_btn', ],     fun: calc_AC},
-    {content: '÷',  classes: ['orange_btn', ],   fun: calc_AC},
-    {content: '7',  classes: ['white_btn', ],    fun: calc_AC},
-    {content: '8',  classes: ['white_btn', ],    fun: calc_AC},
-    {content: '9',  classes: ['white_btn', ],    fun: calc_AC},
-    {content: '×',  classes: ['orange_btn', ],   fun: calc_AC},
-    {content: '4',  classes: ['white_btn', ],    fun: calc_AC},
-    {content: '5',  classes: ['white_btn', ],    fun: calc_AC},
-    {content: '6',  classes: ['white_btn', ],    fun: calc_AC},
-    {content: '-',  classes: ['orange_btn', ],   fun: calc_AC},
-    {content: '1',  classes: ['white_btn', ],    fun: calc_AC},
-    {content: '2',  classes: ['white_btn', ],    fun: calc_AC},
-    {content: '3',  classes: ['white_btn', ],    fun: calc_AC},
-    {content: '+',  classes: ['orange_btn', ],   fun: calc_plus},
-    {content: '0',  classes: ['zeroButton', 'white_btn'],   fun: calc_0},
-    {content: '.',  classes: ['white_btn', ],    fun: calc_dot},
-    {content: '=',  classes: ['orange_btn', ],   fun: calc_equal}
+    const symbols = [
+    {content: 'AC', classes: ['gray_btn', ],     fun: ['ac']},
+    {content: 'C',  classes: ['gray_btn', ],     fun: ['ac']},
+    {content: '<',  classes: ['gray_btn', ],     fun: ['backspace']},
+    {content: '÷',  classes: ['orange_btn', ],   fun: ['operation_input', '/']},
+    {content: '7',  classes: ['white_btn', ],    fun: ['number_input', '7']},
+    {content: '8',  classes: ['white_btn', ],    fun: ['number_input', '8']},
+    {content: '9',  classes: ['white_btn', ],    fun: ['number_input', '9']},
+    {content: '×',  classes: ['orange_btn', ],   fun: ['operation_input', '*']},
+    {content: '4',  classes: ['white_btn', ],    fun: ['number_input', '4']},
+    {content: '5',  classes: ['white_btn', ],    fun: ['number_input', '5']},
+    {content: '6',  classes: ['white_btn', ],    fun: ['number_input', '6']},
+    {content: '-',  classes: ['orange_btn', ],   fun: ['operation_input', '-']},
+    {content: '1',  classes: ['white_btn', ],    fun: ['number_input', '1']},
+    {content: '2',  classes: ['white_btn', ],    fun: ['number_input', '2']},
+    {content: '3',  classes: ['white_btn', ],    fun: ['number_input', '3']},
+    {content: '+',  classes: ['orange_btn', ],   fun: ['operation_input', '+']},
+    {content: '0',  classes: ['zeroButton', 'white_btn'],   fun: ['number_input', '0']},
+    {content: '.',  classes: ['white_btn', ],    fun: ['number_input', '.']},
+    {content: '=',  classes: ['orange_btn', ],   fun: ['equal']}
 ]; 
 
 function visualize_click(button_object) {
@@ -83,24 +66,29 @@ class Button {
 
 class SmallDisplay {
     constructor(parent) {
+        this.MAX_POS = 5;
         this.parent = parent;
         this.v1 = null;
         this.v2 = null;
         this.op = null;
-        this.res = null;
         this.value1 = this.parent.querySelector('p.value1');
         this.value2 = this.parent.querySelector('p.value2');
         this.operation = this.parent.querySelector('p.operation');
-        this.result = this.parent.querySelector('p.result');
-        console.log(`SmallDisplay constructor`, this)
         this.refresh();
     }
 
+    trunc_number(number) {
+        if (Number.isFinite(number)) {
+            const str = number.toPrecision(this.MAX_POS);
+            return Number(str);
+        }
+        return number
+    }
+
     refresh() {
-        this.value1.innerText = this.v1;
-        this.value2.innerText = this.v2;
+        this.value1.innerText = this.trunc_number(this.v1);
+        this.value2.innerText = this.trunc_number(this.v2);
         this.operation.innerText = this.op;
-        this.result = this.op ? ` = ${this.op}` : '';
     }
 
     /**
@@ -127,10 +115,6 @@ class SmallDisplay {
         this.refresh();
     }
 
-    set set_result(value) {
-        this.res = value;
-        this.refresh();
-    }
 }
 
 // class Display
@@ -146,54 +130,15 @@ class Display {
     result_class = "result";
     MAX_POS = 10;
 
-    constructor(parent_element, calculator, bind_keys = true) {
-        this.calculator = calculator;   // объект калькулятора
+    constructor(parent_element) {
         this.parent_element = parent_element;
         this.p = document.createElement('p');
         this.number = '0';
         this.render();
-        if (bind_keys) {
-            this.bind_keys();
-        }
     }
 
     show(string) {
         this.p.innerText = string;
-    }
-
-    bind_keys() {
-        /*
-        Связывает клавиатуру с дележащимимся элементамим
-        */
-        document.addEventListener('keydown', (event) => {
-
-            visualize_click(event.target);
-            
-            if (event.key in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0']) {
-                // this.add_character(event.key);
-                this.calculator.dispatch('number_input', event.key);
-                // console.log('event.key = ', event.key);
-            }
-            else if (event.code === 'Period') {
-                // this.add_character('.');
-                this.calculator.dispatch('number_input', event.key);
-            }
-            else if (event.key === 'Backspace') {
-                this.calculator.dispatch('backspace');
-            }
-            // математические операции
-            else if ("+-*/".includes(event.key)) {
-                this.calculator.dispatch('operation_input', event.key);
-            }
-            // вывод результата
-            else if (event.key === 'Enter' || event.key === '=') {
-                this.calculator.dispatch('equal');
-            }
-            else if (event.key === 'Escape') {
-                this.calculator.dispatch('ac');
-            }
-        });
-    
     }
 
     del_symbol() {
@@ -212,7 +157,6 @@ class Display {
         Отдает значение с экрана в виде числа
         */
         const value = +this.p.innerText;
-        // const value = this.calculator.get_value()
         // если значение получени о число, то возвразаем иначе ошибка
         if (Number.isFinite(value)) {
             return Number(value.toPrecision(this.MAX_POS-3));
@@ -252,7 +196,6 @@ class Display {
      */
     add_character(character) {
         // console.log(`add_character:`, character);
-        // this.number = this.calculator.get_value(); // получаем текущее число из калькулятора
 
         if (this.value.length > this.MAX_POS) {
             return this.value;
@@ -271,11 +214,9 @@ class Display {
             }
             else if (this.value === '0') {
                 this.value = `${ character }`; // записываем число
-                // this.calculator.dispatch("number_input", this.number); // записываем в калькулятор
             }
             else {
                 this.value = `${ this.value }${ character }`; // записываем число
-                // this.calculator.dispatch("number_input", this.number); // записываем число в калькулятор
             }
         }
         else if (character === '.') { // если добаяляется точка
@@ -284,62 +225,70 @@ class Display {
             }
             else { // если точки ещё нет, то добавляем её
                 this.value = `${this.value}.`;
-                // this.calculator.dispatch("number_input", this.number); // записываем число в калькулятор
-                console.log(this.value);
             }
         }
         else {
             console.warn(`Передан символ не из диапазона 0-9 или .`);
         }
-        // this.value = this.number;
         return this.number; // вернем текущее число
     }
 
     render() {
         const display = document.createElement('div');
         display.classList.add(this.display_class);
-
         this.p.classList.add(this.result_class);
-        
         display.append(this.p);
-        
         this.parent_element.append(display);
     }
 }
 
-
-'use strict';
-
+/**
+ * 
+ */
 class Calc {
-    constructor(element, small_display) {
+    constructor(element) {
         this.big_display = new Display(
             document.querySelector('div.monitor'),
-            this,
             true,
         );
 
-        this.small_display = small_display;
+        this.small_display = new SmallDisplay(
+            document.querySelector(`div.small_display`)
+        );
         this.element = element;
         this.ac();
         this.result = null;
-
-        console.log(this);
+        this.bind_keys();
     }
 
-    // get_value () {
-    //     switch (this.state) {
-    //         case "v1":
-    //             return this.v1 || 0;
-    //             break;
-    //         case "v2":
-    //             return this.v2 || 0;
-    //             break;
-    //         case "wait":
-    //             return this.v2 || 0;
-    //         default:
-    //             return NaN;
-    //     }
-    // }
+    bind_keys() {
+        /*
+        Связывает клавиатуру с действиями калькулятора
+        */
+        document.addEventListener('keydown', (event) => {
+            if (event.key in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0']) {
+                this.dispatch('number_input', event.key);
+            }
+            else if (event.code === 'Period') {
+                this.dispatch('number_input', event.key);
+            }
+            else if (event.key === 'Backspace') {
+                this.dispatch('backspace');
+            }
+            // математические операции
+            else if ("+-*/".includes(event.key)) {
+                this.dispatch('operation_input', event.key);
+            }
+            // вывод результата
+            else if (event.key === 'Enter' || event.key === '=') {
+                this.dispatch('equal');
+            }
+            else if (event.key === 'Escape') {
+                this.dispatch('ac');
+            }
+        });
+    
+    }
 
     dispatch(actionName, ...payload) {
         const actions = this.transitions[this.state];
@@ -389,7 +338,6 @@ class Calc {
             },
             leave() {},
             number_input(chars) {
-                console.log(`v1 number input`);
                 const [char, ] = [...chars];
                 this.v1 = this.big_display.add_character(char);
                 this.render();
@@ -399,11 +347,7 @@ class Calc {
                 this.v1 = this.big_display.number;
                 this.result = this.v1;
                 this.change_state('wait');
-            },
-            equal() {
-                console.warn(`v1 = нечего делать`)
-                // ничего не делаем
-            },
+            },  
             ac() {
                 this.ac();
             }, 
@@ -430,29 +374,7 @@ class Calc {
                 this.change_state('calculation');
             },
             equal() {
-                if (this.op) {
-                    if (Number.isFinite(this.v2)) {
-                        // если есть второй аргумент
-                        this.change_state('calculation');
-                    }
-                    else {
-                        // если второго аргумента нет
-                        if (this.op === '+' || this.op === '-') {
-                            this.v2 = 0;
-                        }
-                        else if (this.op === '/' || this.op === '*') {
-                            this.v2 = 1;    // 
-                        }
-                        else {
-                            console.warn(`Unknown operation "${this.op}"`);
-                            return;
-                        }
-                        this.change_state('calculation');
-                    }
-                }
-                else {
-                    // если нет операции ничего не делаем
-                }
+                this.change_state('calculation');
             },
             ac() {
                 this.ac();
@@ -532,7 +454,6 @@ class Calc {
         'wait': {
             init() {
                 this.big_display.number = this.result;
-                // this.v2 = null;
                 this.render();
             },
             leave() {},
@@ -588,35 +509,29 @@ class Calc {
         this.small_display.set_operation = this.op;
         this.small_display.set_result = this.result;
 
-        this.element.querySelector(`p.v1`).innerText = this.v1;
-        this.element.querySelector(`p.op`).innerText = this.op;
-        this.element.querySelector(`p.v2`).innerText = this.v2;
-        this.element.querySelector(`p.result`).innerText = this.error ? this.error : this.result;
-        this.element.querySelector(`p.text`).innerText = `${this}`; // add info
+        // this.element.querySelector(`p.v1`).innerText = this.v1;
+        // this.element.querySelector(`p.op`).innerText = this.op;
+        // this.element.querySelector(`p.v2`).innerText = this.v2;
+        // this.element.querySelector(`p.result`).innerText = this.error ? this.error : this.result;
+        // this.element.querySelector(`p.text`).innerText = `${this}`; // add info
     }
 }
 
 
-const sd = new SmallDisplay(document.querySelector(`div.small_display`));
 
 const elem = document.querySelector(`div.calculator`);
-const c = new Calc(elem, sd);
-console.log(`Создан объект калькулятора:`, c);
+const c = new Calc(elem);
 
 const btnsWrapper = document.querySelector('.btns_wrapper');
-// console.log(btnsWrapper);
 
 const btns = []
-// const btn = new Button("AC", ['gray_btn', ], calc_AC, btnsWrapper);
 symbols.forEach(symbol => {
     const btn = new Button(symbol.content, symbol.classes, symbol.fun, btnsWrapper);
     btns.push(btn);
     btn.element.addEventListener('mousedown', (e) => {
-        console.log('click');
+        
         visualize_click(e.currentTarget);
+        const [command, arg] = [...symbol.fun];
+        c.dispatch(command, arg);
     });
 });
-
-
-// const monitor = document.querySelector('div.monitor');
-// const d = new Display(monitor, c, true);

@@ -53,8 +53,10 @@
 
     font-size: 21px;
     font-family: 'SFPro Regular';
+    outline: none;
 }
-.btn_wrapper > button:active {
+.btn_wrapper > button:active,
+.btn_wrapper > button:focus {
     outline: none;
 }
 
