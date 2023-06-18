@@ -427,23 +427,6 @@ class Calc {
             operation_input(operation) {
                 [this.op, ] = [...operation];
                 this.render();
-                if (this.v2 === null) {
-                    switch (this.op) {
-                        case "+":
-                            [this.v1, this.v2] = [0, this.v1];
-                            break;
-                        case "-":
-                            [this.v1, this.v2] = [0, this.v1];
-                            break;
-                        case "*":
-                            this.v2 = this.v1;
-                            break;
-                        case "/":
-                            [this.v1, this.v2] = [1, this.v1];
-                            this.v1 = 1;
-                            break;
-                    }
-                }
                 this.change_state('calculation');
             },
             equal() {
@@ -509,23 +492,26 @@ class Calc {
                         this.dispatch('to_error', [`Unknown operation: "${this.op}" during calculation!`]);
                     }
                 }
-                else {
-                    if (this.v2 === null) {
-                        switch (this.op) {
-                            case "+":
-                                [this.v1, this.v2] = [0, this.v1];
-                                break;
-                            case "-":
-                                [this.v1, this.v2] = [0, this.v1];
-                                break;
-                            case "*":
-                                this.v2 = this.v1;
-                                break;
-                            case "/":
-                                [this.v1, this.v2] = [1, this.v1];
-                                this.v1 = 1;
-                                break;
-                        }
+                else if (this.v2 === null) {
+                        this.dispatch('fix_empty_v2');
+                }
+            },
+            fix_empty_v2() {
+                if (this.v2 === null) {
+                    switch (this.op) {
+                        case "+":
+                            [this.v1, this.v2] = [0, this.v1];
+                            break;
+                        case "-":
+                            [this.v1, this.v2] = [0, this.v1];
+                            break;
+                        case "*":
+                            this.v2 = this.v1;
+                            break;
+                        case "/":
+                            [this.v1, this.v2] = [1, this.v1];
+                            this.v1 = 1;
+                            break;
                     }
                     this.change_state('calculation');
                 }
