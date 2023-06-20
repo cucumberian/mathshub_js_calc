@@ -1,16 +1,53 @@
 # Калькулятор на JavaScript
 
-[Figma](https://www.figma.com/file/odLAP1PL5atEFGZKbvnxCx/Neumorphism-Calculator-(Community)?type=design&node-id=1-2&t=l8IuWI3zvyrMLBrN-0)
+## Макет
+[ссылка на Figma](https://www.figma.com/file/odLAP1PL5atEFGZKbvnxCx/Neumorphism-Calculator-(Community)?type=design&node-id=1-2&t=l8IuWI3zvyrMLBrN-0)
 
-## Команды
+## Описание
+Калькулятор для сайта, который эмулирует работу обычного кнопочного калькулятора.
 
+Управлять калькулятором можнок как с клавиатуры:
+- `0 - 9`, `.` - клавиши ввода числа
+- `Enter`, `=` - клавиши получния результата
+- `Esc` - сброс калькулятора
+так и нажимая кнопки мышкой на самом калькуляторе.
+
+## Установка
+В HTML файле подключить скрипт калькулятора и создать елемент.
+```html
+<head>
+    <!-- Подкючение стилей в head -->
+    <link rel="stylesheet" href="./css/calculator.css">
+</head>
+
+<body>
+    <!-- Создайте элемент для калькуляьора -->
+    <section id="calc" class="calc_wrapper"></section>
+</body>
+
+<!-- Подключите скрипт в конце файла -->
+<script type="module" defer src="./scripts/script.js"></script>
+```
+В подключенном скрипте произведите импорт и и вызовите конструктор.
+```javascript
+import Calculator from './calculator.js';
+
+const calc_wrapper = document.querySelector(`#calc`);
+new Calculator(
+    calc_wrapper,   // DOM элемент калькулятора
+    false,          // вывод debug-информации
+);
+```
+
+## Описание FSM
+### Команды
 - `number_input(value)`
 - `operation_input(operation)`
 - `equal()`
 - `ac()`
 - `render()`
 
-## Состояния
+### Состояния
 - __null__
     - `init`
         `v1 = 0; state = 'v1';`
@@ -54,7 +91,7 @@
         выполняем расчет
         __wait__ => __calculation__
     - `backspace`
-        удаляем символ через объект дисплея
+        второе число равно 0,
         переход __wait__ => __v2__
 
 - __error__

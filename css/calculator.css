@@ -37,7 +37,7 @@
     font-size: 56px;
 }
 
-.btns_wrapper {
+.calc_wrapper .btns_wrapper {
     display: grid;
     width: 100%;
     
@@ -46,7 +46,7 @@
     gap: 10px;
 }
 
-.btns_wrapper > button {
+.calc_wrapper .btns_wrapper > button {
     border: none;
     border-radius: 23px;
     position: relative;
@@ -55,29 +55,29 @@
     font-family: 'SFPro Regular';
     outline: none;
 }
-.btn_wrapper > button:active,
-.btn_wrapper > button:focus {
+.calc_wrapper .btn_wrapper > button:active,
+.calc_wrapper .btn_wrapper > button:focus {
     outline: none;
 }
 
-.btn_wrapper span {
+.calc_wrapper .btn_wrapper span {
     position: relative;
     z-index: 1;
 }
-.gray_btn {
+.calc_wrapper .gray_btn {
     background: #B0B9CA;
     box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.15), inset 4px 4px 4px #C1C9D4; 
 }
-.white_btn {
+.calc_wrapper .white_btn {
     background: #D0D3E2;
     box-shadow: 4px 4px 30px rgba(57, 62, 81, 0.2), inset 4px 4px 4px hsla(224, 28%, 90%, 1.0);
 }
-.orange_btn {
+.calc_wrapper .orange_btn {
     background: #D07419;
     box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.15), inset 4px 4px 4px #E28927;
 }
 
-.btns_wrapper > button::after {
+.calc_wrapper .btns_wrapper > button::after {
     content: '';
     position: absolute;
     width: calc(100% - 14px);
@@ -89,28 +89,28 @@
     z-index: 0;
 }
 
-.gray_btn::after {
+.calc_wrapper .gray_btn::after {
     background: linear-gradient(134.24deg, #A0ADC4 15.47%, #C5CEDF 94.71%);
 }
-.orange_btn::after {
+.calc_wrapper .orange_btn::after {
     background: linear-gradient(134.24deg, #C15D17 15.47%, #DF8419 94.71%);
 }
-.white_btn::after {
+.calc_wrapper .white_btn::after {
     background: linear-gradient(134.24deg, #CED2DE 15.47%, hsla(218, 27%, 94%, 0.7) 94.71%);
 }
 
-.zeroButton {
+.calc_wrapper .zeroButton {
     grid-column: span 2;
 }
-.whiteText {
+.calc_wrapper .whiteText {
     color: white;
 }
 
-.btns_wrapper > button > span {
+.calc_wrapper .btns_wrapper > button > span {
     position: relative;
     z-index: 2;
 }
 
-.btns_wrapper > button.pressed {
+.calc_wrapper .btns_wrapper > button.pressed {
     transform: scale(0.9);
 }
