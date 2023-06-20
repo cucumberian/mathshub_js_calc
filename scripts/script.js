@@ -1,7 +1,11 @@
 'use strict';
 
-    const symbols = [
-    {content: 'AC', classes: ['gray_btn', ],     fun: ['ac']},
+const symbols = [
+    {
+        content: 'AC',
+        classes: ['gray_btn', ],   
+        fun: ['ac']
+    },
     {content: 'C',  classes: ['gray_btn', ],     fun: ['ac']},
     {content: '<',  classes: ['gray_btn', ],     fun: ['backspace']},
     {content: '÷',  classes: ['orange_btn', ],   fun: ['operation_input', '/']},
@@ -49,11 +53,8 @@ class Button {
         const span = document.createElement('span');
         span.innerText = this.content;
         button.append(span);
-        // console.log('this classes = ', this.classes);
 
-        this.classes.forEach(value => {
-            button.classList.add(value);
-        });
+        button.classList.add(...this.classes);
 
         return button;
     }
@@ -509,11 +510,11 @@ class Calc {
         this.small_display.set_operation = this.op;
         this.small_display.set_result = this.result;
 
-        // this.element.querySelector(`p.v1`).innerText = this.v1;
-        // this.element.querySelector(`p.op`).innerText = this.op;
-        // this.element.querySelector(`p.v2`).innerText = this.v2;
-        // this.element.querySelector(`p.result`).innerText = this.error ? this.error : this.result;
-        // this.element.querySelector(`p.text`).innerText = `${this}`; // add info
+        this.element.querySelector(`p.v1`).innerText = this.v1;
+        this.element.querySelector(`p.op`).innerText = this.op;
+        this.element.querySelector(`p.v2`).innerText = this.v2;
+        this.element.querySelector(`p.result`).innerText = this.error ? this.error : this.result;
+        this.element.querySelector(`p.text`).innerText = `${this}`; // add info
     }
 }
 
